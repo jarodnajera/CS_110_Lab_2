@@ -6,57 +6,63 @@ var p2_score = 0;
 var p1_turn = true;
 var p2_turn = false;
 var game_won = false;
+var cpu_mode = false;
+var win_sound = new Audio('https://cdn.pixabay.com/download/audio/2021/08/04/audio_bb630cc098.mp3?filename=short-success-sound-glockenspiel-treasure-video-game-6346.mp3');
 
+// Makes a new game
 function new_game() {
+    // reset gameboard
     gameboard = ['','','',
                  '','','',
                  '','',''];
     
     const board = document.querySelectorAll(".xo");
     board.forEach((square) => {
-       square.innerHTML = ''; 
+       square.innerHTML = '';
     });
+
+    // reset color of squares
+    document.getElementById('0').style.backgroundColor = 'pink';
+    document.getElementById('1').style.backgroundColor = 'pink';
+    document.getElementById('2').style.backgroundColor = 'pink';
+    document.getElementById('3').style.backgroundColor = 'pink';
+    document.getElementById('4').style.backgroundColor = 'pink';
+    document.getElementById('5').style.backgroundColor = 'pink';
+    document.getElementById('6').style.backgroundColor = 'pink';
+    document.getElementById('7').style.backgroundColor = 'pink';
+    document.getElementById('8').style.backgroundColor = 'pink';
+
+    // reset turns, make new game
     p1_turn = true;
     p2_turn = false;
     document.querySelector(".display_player").innerHTML = 'X';
     game_won = false;
 }
 
-function handle_click(){
-    if(!game_won) {
-        if(p1_turn) {
-            event.target.querySelector(".xo").innerHTML = 'X';
-            p1_turn = false;
-            p2_turn = true;
-            document.querySelector(".display_player").innerHTML = 'O';
-            gameboard[Number(event.target.id)] = 'X';
-            check_board();
-            // console.log(gameboard);
-            // console.log(game_won);
-        }
-        else {
-            event.target.querySelector(".xo").innerHTML = 'O';
-            p1_turn = true;
-            p2_turn = false;
-            document.querySelector(".display_player").innerHTML = 'X';
-            gameboard[Number(event.target.id)] = 'O';
-            check_board();
-            // console.log(gameboard);
-            // console.log(game_won);
-        }
-    }
-}
-
+// Resets game
 function reset_game() {
+    // clear gameboard
     gameboard = ['','','',
                  '','','',
                  '','',''];
                  
     const board = document.querySelectorAll(".xo");
     board.forEach((square) => {
-    square.innerHTML = ''; 
+        square.innerHTML = '';
     });
 
+    // reset color of squares
+    document.getElementById('0').style.backgroundColor = 'pink';
+    document.getElementById('1').style.backgroundColor = 'pink';
+    document.getElementById('2').style.backgroundColor = 'pink';
+    document.getElementById('3').style.backgroundColor = 'pink';
+    document.getElementById('4').style.backgroundColor = 'pink';
+    document.getElementById('5').style.backgroundColor = 'pink';
+    document.getElementById('6').style.backgroundColor = 'pink';
+    document.getElementById('7').style.backgroundColor = 'pink';
+    document.getElementById('8').style.backgroundColor = 'pink';
+
+    // reset scores and turn
     p1_score = 0;
     p2_score = 0;
     p1_turn = true;
@@ -65,10 +71,65 @@ function reset_game() {
     document.querySelector(".display_player").innerHTML = 'X';
     document.getElementById("x-score").innerHTML = '0';
     document.getElementById("o-score").innerHTML = '0';
-    document.getElementById("winner").innerHTML = '';
 }
 
+// Main game logic
+function handle_click(){
+    // check if game has been won
+    if(!game_won) {
+        // p1's turn
+        if(p1_turn) {
+            // put X in clicked box and turn box color into salmon
+            event.target.querySelector(".xo").innerHTML = 'X';
+            document.getElementById(event.target.id).style.backgroundColor = 'salmon';
+            // change who's turn it is
+            p1_turn = false;
+            p2_turn = true;
+            document.querySelector(".display_player").innerHTML = 'O';
+            // update gameboard array and check if game has been won
+            gameboard[Number(event.target.id)] = 'X';
+            check_board();
+            // console.log(gameboard);
+            // console.log(game_won);
+
+            // cpu mode logic
+            if(cpu_mode && !game_won) {
+                setTimeout(function(){
+                    let empty_space = gameboard.findIndex(item => item == '');
+                    gameboard[empty_space] = 'O';
+                    document.getElementById(String(empty_space)).querySelector(".xo").innerHTML = 'O';
+                    document.getElementById(String(empty_space)).style.backgroundColor = 'salmon';
+                    p1_turn = true;
+                    p2_turn = false;
+                    document.querySelector(".display_player").innerHTML = 'X';
+                    check_board();
+                    
+                }, 600);
+
+                return
+            }
+        }
+        // p2's turn
+        else {
+            // put O in clicked box and turn box color into salmon
+            event.target.querySelector(".xo").innerHTML = 'O';
+            document.getElementById(event.target.id).style.backgroundColor = 'salmon';
+            // change who's turn it is
+            p1_turn = true;
+            p2_turn = false;
+            document.querySelector(".display_player").innerHTML = 'X';
+            // update gameboard array and check if game has been won
+            gameboard[Number(event.target.id)] = 'O';
+            check_board();
+            // console.log(gameboard);
+            // console.log(game_won);
+        }
+    }
+}
+
+// Helper
 function check_board() {
+    // win conditions
     if(gameboard[0] == gameboard[1] && gameboard[1] == gameboard[2] && gameboard[0] != '') {
         game_won = true;
     }
@@ -98,13 +159,29 @@ function check_board() {
     if(game_won && p2_turn) {
         p1_score += 1;
         document.getElementById("x-score").innerHTML = '' + p1_score;
-        setTimeout(function(){alert('X won this game!')}, 200);
+        setTimeout(function(){alert('X won this game!')}, 300);
+        win_sound.play();
     }
 
     // O won
     if(game_won && p1_turn) {
         p2_score += 1;
         document.getElementById("o-score").innerHTML = '' + p2_score;
-        setTimeout(function(){alert('O won this game!')}, 200);
+        setTimeout(function(){alert('O won this game!')}, 300);
+        win_sound.play();
+    }
+}
+
+// Helper for CPU Mode
+function checkbox_click() {
+    if(!cpu_mode) {
+        console.log("CPU Mode activated");
+        reset_game();
+        cpu_mode = true;
+    }
+    else {
+        console.log("CPU Mode de-activated");
+        reset_game();
+        cpu_mode = false;
     }
 }

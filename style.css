@@ -73,3 +73,13 @@ h2 {
 .score_counter {
   text-align: center;
 }
+
+#cpu-checkbox {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+#time-left {
+  text-align: center;
+  margin-bottom: 10px;
+}
