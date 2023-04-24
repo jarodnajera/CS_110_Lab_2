@@ -13,7 +13,6 @@ var win_sound = new Audio('https://cdn.pixabay.com/download/audio/2021/08/04/aud
 // Makes a new game
 function new_game() {
     clearInterval(this_timer);
-    handle_timer();
     // reset gameboard
     gameboard = ['','','',
                  '','','',
@@ -45,7 +44,6 @@ function new_game() {
 // Resets game
 function reset_game() {
     clearInterval(this_timer);
-    handle_timer();
     // clear gameboard
     gameboard = ['','','',
                  '','','',
@@ -201,9 +199,20 @@ function handle_timer() {
     sec--;
 
     if (sec == -02) {
-        alert("Time us up! Next players turn.");
+        alert("Time is up! Next players turn.");
         clearInterval(this_timer);
-        handle_timer();
+        if(p1_turn == true && p2_turn == false){
+            p1_turn = false;
+            p2_turn = true;
+            document.querySelector(".display_player").innerHTML = 'O';
+            handle_click();
+        }
+        else{
+            p1_turn = true;
+            p2_turn = false;
+            document.querySelector(".display_player").innerHTML = 'X';
+            handle_click();
+        }
     }
   }, 1000);
 }
