@@ -8,6 +8,8 @@ var p2_turn = false;
 var game_won = false;
 var cpu_mode = false;
 var win_sound = new Audio('https://cdn.pixabay.com/download/audio/2021/08/04/audio_bb630cc098.mp3?filename=short-success-sound-glockenspiel-treasure-video-game-6346.mp3');
+var x_moves = [];
+var o_moves = [];
 
 // Makes a new game
 function new_game() {
@@ -15,6 +17,8 @@ function new_game() {
     gameboard = ['','','',
                  '','','',
                  '','',''];
+    x_moves = [];
+    o_moves = [];
     
     const board = document.querySelectorAll(".xo");
     board.forEach((square) => {
@@ -50,6 +54,8 @@ function reset_game() {
     board.forEach((square) => {
         square.innerHTML = '';
     });
+    x_moves = [];
+    o_moves = [];
 
     // reset color of squares
     document.getElementById('0').style.backgroundColor = 'pink';
@@ -88,6 +94,17 @@ function handle_click(){
             document.querySelector(".display_player").innerHTML = 'O';
             // update gameboard array and check if game has been won
             gameboard[Number(event.target.id)] = 'X';
+            // update x_moves array and check remove oldest move after fifth move
+            x_moves.push(Number(event.target.id));
+            //console.log(x_moves);
+            if(x_moves.length == 5) {
+                let oldest_move = x_moves[0];
+                gameboard[oldest_move] = '';
+                oldest_move = String(oldest_move);
+                x_moves.shift();
+                document.getElementById(oldest_move).style.backgroundColor = 'pink';
+                document.getElementById(oldest_move).querySelector(".xo").innerHTML = '';
+            }
             check_board();
             // console.log(gameboard);
             // console.log(game_won);
@@ -102,9 +119,19 @@ function handle_click(){
                     p1_turn = true;
                     p2_turn = false;
                     document.querySelector(".display_player").innerHTML = 'X';
+                    // update o_moves array and check remove oldest move after fifth move
+                    o_moves.push(Number(event.target.id));
+                    if(o_moves.length == 5) {
+                        let oldest_move = o_moves[0];
+                        gameboard[oldest_move] = '';
+                        oldest_move = String(oldest_move);
+                        o_moves.shift();
+                        document.getElementById(oldest_move).style.backgroundColor = 'pink';
+                        document.getElementById(oldest_move).querySelector(".xo").innerHTML = '';
+                    }
                     check_board();
                     
-                }, 600);
+                }, 800);
 
                 return
             }
@@ -120,6 +147,17 @@ function handle_click(){
             document.querySelector(".display_player").innerHTML = 'X';
             // update gameboard array and check if game has been won
             gameboard[Number(event.target.id)] = 'O';
+            // update o_moves array and check remove oldest move after fifth move
+            o_moves.push(Number(event.target.id));
+            //console.log(x_moves);
+            if(o_moves.length == 5) {
+                let oldest_move = o_moves[0];
+                gameboard[oldest_move] = '';
+                oldest_move = String(oldest_move);
+                o_moves.shift();
+                document.getElementById(oldest_move).style.backgroundColor = 'pink';
+                document.getElementById(oldest_move).querySelector(".xo").innerHTML = '';
+            }
             check_board();
             // console.log(gameboard);
             // console.log(game_won);
