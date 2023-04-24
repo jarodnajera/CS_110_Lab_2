@@ -7,10 +7,13 @@ var p1_turn = true;
 var p2_turn = false;
 var game_won = false;
 var cpu_mode = false;
+var this_timer = null;
 var win_sound = new Audio('https://cdn.pixabay.com/download/audio/2021/08/04/audio_bb630cc098.mp3?filename=short-success-sound-glockenspiel-treasure-video-game-6346.mp3');
 
 // Makes a new game
 function new_game() {
+    clearInterval(this_timer);
+    handle_timer();
     // reset gameboard
     gameboard = ['','','',
                  '','','',
@@ -41,6 +44,8 @@ function new_game() {
 
 // Resets game
 function reset_game() {
+    clearInterval(this_timer);
+    handle_timer();
     // clear gameboard
     gameboard = ['','','',
                  '','','',
@@ -78,6 +83,8 @@ function handle_click(){
     // check if game has been won
     if(!game_won) {
         // p1's turn
+        clearInterval(this_timer);
+        handle_timer();
         if(p1_turn) {
             // put X in clicked box and turn box color into salmon
             event.target.querySelector(".xo").innerHTML = 'X';
@@ -184,4 +191,19 @@ function checkbox_click() {
         reset_game();
         cpu_mode = false;
     }
+}
+
+function handle_timer() {
+  var sec = 15;
+  document.getElementById("timer").innerHTML = sec;
+  this_timer = setInterval(function() {
+    document.getElementById("timer").innerHTML = sec;
+    sec--;
+
+    if (sec == -02) {
+        alert("Time us up! Next players turn.");
+        clearInterval(this_timer);
+        handle_timer();
+    }
+  }, 1000);
 }
